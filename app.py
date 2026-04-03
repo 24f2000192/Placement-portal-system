@@ -1,12 +1,8 @@
 # ── LINE 1-4: Import what we need ──────────────────────────
-from flask import render_template, request, redirect, url_for, session
+from flask import Blueprint,render_template, request, redirect, url_for, session, flash
 from flask import Flask          # Flask is the main class that creates our app
 from models import db, User, CompanyProfile, StudentProfile, PlacementDrive, Application
 import os           # os lets us work with file paths
-from application.auth import auth_bp      
-from application.student import student_bp   
-from application.admin import admin_bp
-from application.company import company_bp
 from jinja2 import Template
 
 # ── FUNCTION: create_app() ────────────────────────────────
@@ -66,10 +62,7 @@ def seed_admin():
 app = create_app()
 
 # register blueprint
-app.register_blueprint(auth_bp)
-app.register_blueprint(admin_bp, url_prefix='/admin')
-app.register_blueprint(company_bp, url_prefix='/company')
-app.register_blueprint(student_bp, url_prefix='/student')
+
 
 @app.route('/')
 def home():
@@ -77,7 +70,7 @@ def home():
 
 
 # ---- HOME PAGE ----
-@auth_bp.route('/')
+@app.route('/')
 def index():
     # if already logged in 
     if session.get('user_id'):
@@ -88,7 +81,7 @@ def index():
     return render_template('index.html')
 
 # - LOGIN -
-@auth_bp.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         email = request.form.get('email')
@@ -129,7 +122,7 @@ def login():
     return render_template('auth/login.html')
 
 # ---- REGISTER ----
-@auth_bp.route('/register', methods=['GET', 'POST'])
+@app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         name     = request.form.get('name')
@@ -173,11 +166,16 @@ def register():
     return render_template('auth/register.html')
 
 # ---- LOGOUT ----
-@auth_bp.route('/logout')
+@app.route('/logout')
 def logout():
     session.clear()  # Remove all session data = logged out
     flash('You have been logged out.', 'info')
     return redirect(url_for('auth.login'))
+
+admin_bp = Blueprint('admin', __name__)
+student_bp = Blueprint('student', __name__)
+company_bp = Blueprint('company', __name__)
+auth_bp = Blueprint('auth', __name__)
 
 # Full URL = /admin + /dashboard = /admin/dashboard
 @admin_bp.route('/dashboard')
@@ -188,6 +186,19 @@ def dashboard():
 @company_bp.route('/dashboard')
 def dashboard():
     return render_template('company/dashboard.html')  
+
+@student_bp.route('/dashboard')
+def dashboard():
+    return render_template('student/dashboard.html')
+
+
+@student_bp.route('/profile')
+def profile():
+    return render_template('student/profile.html')
+
+@student_bp.route('/history')
+def history():
+    return render_template('student/history.html')
 
 
 # This means: "If you run THIS file directly (python app.py), start the server"
