@@ -172,31 +172,29 @@ def logout():
     flash('You have been logged out.', 'info')
     return redirect(url_for('auth.login'))
 
-admin_bp = Blueprint('admin', __name__)
-student_bp = Blueprint('student', __name__)
-company_bp = Blueprint('company', __name__)
-auth_bp = Blueprint('auth', __name__)
+
+
 
 # Full URL = /admin + /dashboard = /admin/dashboard
-@admin_bp.route('/dashboard')
+@app.route('/admin/dashboard')
 def dashboard():
     
     return render_template('admin/dashboard.html')    
 
-@company_bp.route('/dashboard')
+@app.route('/company/dashboard')
 def dashboard():
     return render_template('company/dashboard.html')  
 
-@student_bp.route('/dashboard')
+@app.route('/student/dashboard')
 def dashboard():
     return render_template('student/dashboard.html')
 
 
-@student_bp.route('/profile')
+@app.route('/student/profile')
 def profile():
     return render_template('student/profile.html')
 
-@student_bp.route('/history')
+@app.route('/student/history')
 def history():
     return render_template('student/history.html')
 
