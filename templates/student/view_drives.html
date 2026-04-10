@@ -1,73 +1,43 @@
 {% extends "base.html" %}
 {% block content %}
-
 <h2 class="mb-4">Available Placement Drives</h2>
-
 <div class="card shadow-sm border-0">
-<div class="table-responsive">
-
-<table class="table table-hover align-middle">
-
-<thead class="table-light">
-<tr>
-    <th>Company</th>
-    <th>Job Title</th>
-    <th>Location</th>
-    <th>Deadline</th>
-    <th>Action</th>
-</tr>
-</thead>
-
-<tbody>
-
-{% for drive in drives %}
-
-<tr>
-
-<td class="ps-3 fw-bold">
-    {{ drive.company.company_name }}
-</td>
-
-<td>
-    {{ drive.job_title }}
-</td>
-
-<td>
-    {{ drive.location }}
-</td>
-
-<td>
-    {{ drive.deadline }}
-</td>
-
-<td>
-
-{% if drive.id in applied_drives %}
-
-<span class="badge bg-success">
-Applied
-</span>
-
-{% else %}
-
-<a href="/apply/{{ drive.id }}"
-class="btn btn-primary btn-sm">
-Apply
-</a>
-
-{% endif %}
-
-</td>
-
-</tr>
-
-{% endfor %}
-
-</tbody>
-
-</table>
-
-</div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Company</th>
+                    <th>Job Title</th>
+                    <th>Location</th>
+                    <th>Deadline</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for drive in drives %}
+                <tr>
+                    <td class="ps-3 fw-bold">
+                        {{ drive.company.company_name }}
+                    </td>
+                    <td>{{ drive.job_title }}</td>
+                    <td>{{ drive.location }}</td>
+                    <td>{{ drive.deadline }}</td>
+                    <td>
+                        {% if drive.id in applied_drives %}
+                        <span class="badge bg-success">
+                            Applied
+                        </span>
+                        {% else %}
+                        <a href="/apply/{{ drive.id }}"class="btn btn-primary btn-sm">
+                            Apply
+                        </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 
 {% endblock %}
