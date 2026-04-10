@@ -74,6 +74,9 @@ class CompanyProfile(db.Model):
 
     # approval_status can be: 'pending', 'approved', or 'rejected'
     approval_status = db.Column(db.String(20), default='pending')
+
+    is_active = db.Column(db.Boolean, default=True)
+
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     # One company can have MANY drives (lazy=True means load on demand)
@@ -86,6 +89,8 @@ class CompanyProfile(db.Model):
 class StudentProfile(db.Model):
     __tablename__ = 'student_profile'
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    Email = db.Column(db.String(100), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     # Student's IITM roll number/ID
@@ -114,7 +119,7 @@ class PlacementDrive(db.Model):
 
     job_title = db.Column(db.String(200), nullable=False)
     job_description = db.Column(db.Text)
-    eligibility_criteria = db.Column(db.Text)
+    location= db.Column(db.Text)
     deadline = db.Column(db.DateTime)  # Application deadline date
 
     # status can be: 'pending' (waiting admin), 'approved', 'rejected', 'closed'
@@ -147,3 +152,4 @@ class Application(db.Model):
     # UniqueConstraint prevents same student from applying to same drive twice
     # The database itself will REJECT duplicate applications at the table level
     __table_args__ = (db.UniqueConstraint('student_id', 'drive_id', name='unique_application'),)
+

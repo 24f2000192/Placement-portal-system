@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>company register</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    {% extends 'base.html' %}
+    {% block title %}Register{% endblock %}
+    {% block content %}
+    <form method="POST">
+        <div>
+            <label>HR Name</label>
+            <input type="text" name="name" class="form-control" placeholder="HR name" required>
+        </div>
+        <div class="mb-3">
+            <label>Company Name</label>
+            <input type="text" name="company_name" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label>Email</label>
+            <input type="email" name="email" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label>Password</label>
+            <input type="password" name="password" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label>HR Contact</label>
+            <input type="text" name="hr_contact" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label>Website</label>
+            <input type="text" name="website" class="form-control">
+        </div>
+        <div class="mb-3">
+            <label>Description</label>
+            <textarea name="description" class="form-control"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">
+            Register Company
+        </button>
+    </form>
+    {% endblock %}
+    
+</body>
+</html>

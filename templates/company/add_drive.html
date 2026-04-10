@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+   {% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+<h2>Create Placement Drive</h2>
+
+<form method="POST">
+
+<div class="mb-3">
+<label class="form-label">Job Title</label>
+<input type="text" name="job_title" class="form-control" required>
+</div>
+
+<div class="mb-3">
+<label class="form-label">Job Description</label>
+<textarea name="job_description" class="form-control"></textarea>
+</div>
+
+<div class="mb-3">
+<label class="form-label">Location</label>
+<input type="text" name="location" class="form-control">
+</div>
+
+<div class="mb-3">
+<label class="form-label">Deadline</label>
+<input type="date" name="deadline" class="form-control">
+</div>
+
+<button type="submit" class="btn btn-success">
+Create Drive
+</button>
+
+</form>
+
+</div>
+
+{% endblock %}
+</body>
+</html>

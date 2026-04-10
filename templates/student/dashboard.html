@@ -21,26 +21,26 @@
             <th>Company</th><th>Job Title</th><th>Deadline</th><th>Action</th>
         </tr></thead>
         <tbody>
-    {% for drive in approved_drives %}
-        <tr>
-            <td>{{ drive.company.company_name }}</td>
-            <td>{{ drive.job_title }}</td>
-            <td>{{ drive.deadline.strftime('%d %b %Y') if drive.deadline else 'Open' }}</td>
-            <td>
-                <!-- Check if student already applied -->
-                {% if drive.id in applied_drive_ids %}
-                <span class="badge bg-secondary">Already Applied</span>
-                {% else %}
-                <a href="{{ url_for('student.apply', drive_id=drive.id) }}"
-                   class="btn btn-primary btn-sm">Apply</a>
-                {% endif %}
-            </td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
-{% else %}
-<p class="text-muted">No approved drives available right now.</p>
+        {% for drive in approved_drives %}
+            <tr>
+                <td>{{ drive.company.company_name }}</td>
+                <td>{{ drive.job_title }}</td>
+                <td>{{ drive.deadline.strftime('%d %b %Y') if drive.deadline else 'Open' }}</td>
+                <td>
+                    <!-- Check if student already applied -->
+                    {% if drive.id in applied_drive_ids %}
+                    <span class="badge bg-secondary">Already Applied</span>
+                    {% else %}
+                    <a href="{{ url_for('apply', drive_id=drive.id) }}"
+                    class="btn btn-primary btn-sm">Apply</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="text-muted">No approved drives available right now.</p>
 {% endif %}
 
 <!-- MY APPLICATIONS -->
@@ -76,8 +76,7 @@
 
 <!-- QUICK LINKS -->
 <div class="mt-4">
-    <a href="{{ url_for('student.profile') }}" class="btn btn-outline-primary me-2">Edit Profile</a>
-    <a href="{{ url_for('student.history') }}" class="btn btn-outline-secondary">Placement History</a>
+    <a href="{{ url_for('profile_update') }}" class="btn btn-outline-primary me-2">Edit Profile</a>
 </div>
 {% endblock %}
 </body>

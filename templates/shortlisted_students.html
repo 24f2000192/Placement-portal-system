@@ -1,0 +1,92 @@
+<body>{% extends "base.html" %}
+{% block content %}
+
+<div class="row justify-content-center">
+<div class="col-md-10">
+
+<div class="card border-0 shadow-sm">
+
+<div class="card-header bg-success text-white py-3">
+<h4 class="mb-0">
+<i class="bi bi-award-fill me-2"></i>
+Selected Students
+</h4>
+</div>
+
+<div class="card-body p-0">
+
+
+
+{% for placement in placements %}
+
+
+
+{% endfor %}
+
+<table class="table table-hover mb-0">
+
+<thead class="table-light">
+<tr>
+<th class="ps-3">Student</th>
+<th>Branch</th>
+<th>CGPA</th>
+<th>Resume</th>
+<th>Status</th>
+</tr>
+</thead>
+
+<tbody><tr>
+
+<td class="ps-3">
+<strong>{{ placement.student.name }}</strong><br>
+<small class="text-muted">{{ placement.student.email }}</small>
+</td>
+
+<td>{{ placement.student.branch }}</td>
+
+<td>
+<span class="badge bg-info text-dark">
+{{ placement.student.cgpa }}
+</span>
+</td>
+
+<td>
+
+{% if placement.student.resume %}
+
+<a href="{{ url_for('static', filename='resumes/' + placement.student.resume) }}" class="btn btn-sm btn-outline-dark" target="_blank">
+
+<i class="bi bi-file-earmark-pdf"></i> Resume
+
+</a>
+
+{% else %}
+
+<span class="text-muted small">No Resume</span>
+
+{% endif %}
+
+</td>
+
+<td>
+<span class="badge bg-success">Selected</span>
+</td>
+
+</tr></tbody>
+
+</table>
+
+{% if not placements %}
+
+<div class="p-5 text-center text-muted">
+No students have been selected yet.
+</div>
+
+{% endif %}
+
+</div>
+</div>
+</div>
+</div>
+
+{% endblock %}</body>

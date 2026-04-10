@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    {% extends "base.html" %}
+    {% block content %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Received Applications</h2>
+        <span class="badge bg-secondary">{{ applications|length }} Total</span>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th class="ps-3">Student Name</th>
+                    <th>Email </th>
+                    <th> Branch </th>
+                    <th>CGPA</th>
+                    <th>Resume</th>
+                    <th>Status</th>
+                    <th class="text-center">Review Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    {% for application in applications %}                
+                    <td class="ps-3 fw-medium">{{ application.student.name }}</td>
+                    <td>    
+                        <div class="small text-muted">{{ application.student.Email }}</div>
+                    </td>
+                    <td>
+                        <div class="small fw-bold text-primary">{{ application.student.branch }}</div>
+                    </td>    
+                    
+
+                    <td>
+                        <span class="badge bg-info text-dark">{{ application.student.cgpa }}</span>
+                    </td>
+
+                    <td>
+                        {% if application.student.resume %}
+                        <a href="{{ url_for('static', filename='uploads' + application.student.resume) }}" class="btn btn-outline-dark btn-sm" target="_blank"><i class="bi bi-file-earmark-pdf"></i> 
+                            View
+                        </a>
+
+                        {% else %}
+                            <span class="text-muted small">Resume Not Uploaded</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if application.status == "applied" %}
+                            <span class="badge bg-secondary">Applied</span>
+
+                        {% elif application.status == "shortlisted" %}
+                            <span class="badge bg-warning text-dark">Shortlisted</span>
+
+                        {% elif application.status == "selected" %}
+                            <span class="badge bg-success">Selected</span>
+
+                        {% elif application.status == "rejected" %}
+                            <span class="badge bg-danger">Rejected</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if application.status == "applied" %}
+                            <a class="btn btn-warning btn-sm" href="/update_application/{{application.id}}/shortlisted">Shortlist</a>
+                            <a class="btn btn-success btn-sm" href="/update_application/{{application.id}}/selected">Select</a>
+                            <a class="btn btn-danger btn-sm" href="/update_application/{{application    .id}}/rejected">Reject</a>
+
+                        {% elif application.status == "shortlisted" %}
+                            <a class="btn btn-success btn-sm" href="/update_application/{{application.id}}/selected">Select</a>
+                            <a class="btn btn-danger btn-sm" href="/update_application/{{application.id}}/rejected">Reject</a>
+
+                        {% else %}
+                            <span class="text-muted small">Action Completed</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                 {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+</body>
+</html>

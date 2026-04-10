@@ -16,8 +16,10 @@
         <h1>Placement Portal</h1>
         <p class="lead">Connecting students with Opportunities</p>
         <div class="mt-4">
-            <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg me-3">Login</a>
-            <a href="{{ url_for('auth.register') }}" class="btn btn-outline-primary btn-lg">Register</a>
+            <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg me-3">Login</a>
+            <br>
+            <a href="{{ url_for('student_register') }}" class="btn btn-outline-primary btn-lg">Register as student</a>
+            <a href="{{ url_for('company_register') }}" class="btn btn-outline-primary btn-lg">Register as company</a>
         </div>
     </div>
     {% endblock %}
