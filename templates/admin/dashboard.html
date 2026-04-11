@@ -12,7 +12,7 @@
     {% block title %}Admin Dashboard{% endblock %}
 
     {% block content %}
-    <h2>Admin Dashboard</h2>
+    <h2 class="fw-bold text-primary" color="black">Admin Dashboard</h2>
     {% if username %}
     <h2>Welcome {{ username }}</h2>
     {% endif %}
@@ -22,51 +22,61 @@
     <div class="row mt-4 g-4">
         <div class="col-md-6">
             <div class="card text-white bg-primary">
-                <div class="card-body">
+                <div class="card-body shadow-sm border-0 text-center">
                     <h5>Total Students</h5>
                     <!-- displays the value passed from Flask route -->
-                    <h2>{{ student_count }}</h2>
+                    <h2 class="fw-bold">{{ student_count }}</h2>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card text-white bg-success">
-                <div class="card-body">
+            <div class="card text-white bg-primary">
+                <div class="card-body shadow-sm border-0 text-center">
                     <h5>Total Companies</h5>
-                    <h2>{{ company_count }}</h2>
+                    <h2 class="fw-bold">{{ company_count }}</h2>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card text-white bg-info">
-                <div class="card-body">
+        <div class="col-md-6">
+            <div class="card text-white bg-primary">
+                <div class="card-body shadow-sm border-0 text-center">
                     <h5>Total Drives</h5>
-                    <h2>{{ drives_count }}</h2>
+                    <h2 class="fw-bold">{{ drives_count }}</h2>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card text-white bg-danger">
-                <div class="card-body">
+        <div class="col-md-6">
+            <div class="card text-white bg-primary">
+                <div class="card-body shadow-sm border-0 text-center">
                     <h5>Total Applications</h5>
-                    <h2>{{ application_count }}</h2>
+                    <h2 class="fw-bold">{{ application_count }}</h2>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card text-white bg-danger">
-                <div class="card-body">
-                    <h5>Placement</h5>
-                    <h2>{{ placement_count }}</h2>
-                </div>
-            </div>
-        </div>
+        
     </div>
 
     <hr>
+
     
     <h4>Companies</h4>
-    <div>
+
+<form method="GET" action="{{ url_for('admin_dashboard') }}" class="mb-3">
+    <div class="input-group">
+        <input type="text" name="company_search" class="form-control"
+               placeholder="Search company by name..."
+               value="{{ request.args.get('company_search','') }}">
+        <button class="btn btn-primary">Search</button>
+    </div>
+</form>
+{% if request.args.get('company_search') %}
+<div class="alert alert-info py-2">
+    {{ company_search_count }} company(s) found for 
+    "<strong>{{ request.args.get('company_search') }}</strong>"
+</div>
+{% endif %}
+    <div class="table-responsive">
+        
         <table class="table table-hover align-middle shadow-sm bg-white" >
             <thead class="table-light">
                 <tr><th>ID</th><th>Name</th><th>Email</th><th>HR contact</th><th>status</th><th>Action</th></tr>
@@ -88,6 +98,13 @@
                         {% elif company.approval_status == "rejected" %}
                         <span class="badge bg-danger text-white">Rejected</span>
 
+                        {% endif %}
+                        {% if company.approval_status == "approved" %}
+                            {% if company.is_active %}
+                        <span class="badge bg-primary">Active</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Deactivated</span>
+                            {% endif %}
                         {% endif %}
 
                     </td>
@@ -120,7 +137,23 @@
             </tbody>
         </table>
     </div>
-    <h4 class="mt-5" mb-3 fw-bold>students</h4>
+    
+<h4 class="mt-5 mb-3 fw-bold">Students</h4>
+
+<form method="GET" action="{{ url_for('admin_dashboard') }}" class="mb-3">
+    <div class="input-group">
+        <input type="text" name="student_search" class="form-control"
+               placeholder="Search student by Name, ID, Email....."
+               value="{{ request.args.get('student_search','') }}">
+        <button class="btn btn-primary">Search</button>
+    </div>
+</form>
+{% if request.args.get('student_search') %}
+<div class="alert alert-info py-2">
+    {{ student_search_count }} student(s) found for 
+    "<strong>{{ request.args.get('student_search') }}</strong>"
+</div>
+{% endif %}
     <div class="table-responsitive">
         <table class="table table-hover align-middle shadow-sm bg-white" >
             <thead class="table-light">
@@ -174,9 +207,9 @@
                     <td>{{ drive.location }}</td>
                     <td>{{ drive.company.company_name }}</td>
                     <td>{% if drive.status == "pending" %} 
-                            <span class="badge bg-success text-white">pending</span>
+                            <span class="badge bg-warning text-white">pending</span>
                         {% elif drive.status == "active" %} 
-                            <span class="badge bg-secondary text-white">Active</span>
+                            <span class="badge bg-success text-white">Active</span>
                         {% else %}
                             <span class="badge bg-danger text-white">closed</span>
                         {% endif %}

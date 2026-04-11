@@ -153,3 +153,55 @@ class Application(db.Model):
     # The database itself will REJECT duplicate applications at the table level
     __table_args__ = (db.UniqueConstraint('student_id', 'drive_id', name='unique_application'),)
 
+
+# 
+# TABLE 6: PLACEMENT (Final selected students)
+# Stores students who are finally selected in a drive
+#
+class Placement(db.Model):
+    __tablename__ = 'placement'
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    # Which student got placed
+    student_id = db.Column(
+        db.Integer,
+        db.ForeignKey('student_profile.id'),
+        nullable=False
+    )
+
+    # Which company placed the student
+    company_id = db.Column(
+        db.Integer,
+        db.ForeignKey('company_profile.id'),
+        nullable=False
+    )
+
+    # Which drive resulted in placement
+    drive_id = db.Column(
+        db.Integer,
+        db.ForeignKey('placement_drive.id'),
+        nullable=False
+    )
+
+    # Placement status
+    status = db.Column(db.String(20), default='placed')
+
+    placement_date = db.Column(
+        db.DateTime,
+        default=datetime.utcnow
+    )
+
+    # Relationships (optional but useful)
+    student = db.relationship('StudentProfile', backref='placements')
+    company = db.relationship('CompanyProfile', backref='placements')
+    drive = db.relationship('PlacementDrive', backref='placements')
+
+    # Prevent duplicate placement record
+    __table_args__ = (
+        db.UniqueConstraint(
+            'student_id',
+            'drive_id',
+            name='unique_placement'
+        ),
+    )

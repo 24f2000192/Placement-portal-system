@@ -5,8 +5,10 @@ import os           # os lets us work with file paths
 from jinja2 import Template
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 from fileinput import filename
 from datetime import datetime
+from sqlalchemy import or_
 
 # FUNCTION: create_app() 
 def create_app():
@@ -105,7 +107,7 @@ def student_register():
 
             resume.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-            resume_path = f"static/uploads/{filename}"
+            resume_path = filename
 
         # create student profile
         student = StudentProfile(
@@ -153,12 +155,22 @@ def login():
             flash('Invalid email or password', 'danger')
             return render_template('login.html')
 
-        # Case 2: User is blacklisted
+        # Case 2: User is deactivated
+        if not user.is_active:
+            flash('Your account has been deactivated by admin.', 'danger')
+            return render_template('login.html')
+        
+        # Case 3: User is blacklisted
         if user.is_blacklisted:
             flash('Your account has been blacklisted. Contact admin.', 'danger')
             return render_template('login.html')
 
-        # Case 3: Company not yet approved
+        # Case 4: User is blacklisted
+        if user.is_blacklisted:
+            flash('Your account has been blacklisted. Contact admin.', 'danger')
+            return render_template('login.html')
+
+        # Case 5: Company not yet approved
         if user.role == 'company':
             if user.company_profile.approval_status == 'pending':
                 flash('Your company registration is pending admin approval.', 'warning')
@@ -257,8 +269,35 @@ def admin_dashboard():
         flash('Access denied. Admins only.', 'danger')
         return redirect(url_for('login'))
     
+    
+    company_search = request.args.get("company_search")
+    # Company search
+    companies_query = CompanyProfile.query
+
+    if company_search:
+        companies_query = companies_query.filter(
+            CompanyProfile.company_name.ilike(f"%{company_search}%")
+        )
+
+
+    student_search = request.args.get("student_search")
+    # Student search
+    students_query = StudentProfile.query.join(User)
+
+    if student_search:
+        students_query = students_query.filter(
+            or_(
+                StudentProfile.name.ilike(f"%{student_search}%"),
+                StudentProfile.id.ilike(f"%{student_search}%"),
+                User.email.ilike(f"%{student_search}%"),
+                
+            )
+        )
+
     students = StudentProfile.query.all()
     companies = CompanyProfile.query.all()
+    company_search_count = companies_query.count()
+    student_search_count = students_query.count()
     drives = PlacementDrive.query.all()
     placement_count = Application.query.filter_by(status='placed').count()
     application_count = Application.query.count()
@@ -269,6 +308,9 @@ def admin_dashboard():
         'admin/dashboard.html',
         students=students,
         companies=companies,
+        company_search=company_search,
+        company_search_count=company_search_count,
+        student_search_count=student_search_count,
         drives=drives,
         placement_count=placement_count,
         application_count=application_count,
@@ -393,6 +435,15 @@ def add_drive():
         return redirect(url_for('login'))
 
     company = db.session.get(CompanyProfile, session['company_id'])
+
+    if company.approval_status != "approved":
+        flash("Your company is not approved by admin. You cannot create drives.", "danger")
+        return redirect(url_for('company_dashboard'))
+    
+    if not company.is_active:
+        flash("Your company is deactivated by admin. Contact admin.", "danger")
+        return redirect(url_for('company_dashboard'))
+
 
     if request.method == 'POST':
 

@@ -12,14 +12,40 @@
     {% extends 'base.html' %}
     {% block title %}Welcome - Placement Portal {% endblock %}
     {% block content %}
+
     <div class="text-center py-5">
-        <h1>Placement Portal</h1>
-        <p class="lead">Connecting students with Opportunities</p>
-        <div class="mt-4">
-            <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg me-3">Login</a>
-            <br>
-            <a href="{{ url_for('student_register') }}" class="btn btn-outline-primary btn-lg">Register as student</a>
-            <a href="{{ url_for('company_register') }}" class="btn btn-outline-primary btn-lg">Register as company</a>
+        <div class="overlay" shadow-lg text-center>
+            <h1 class="display-4 fw-bold text-primary mb-4">Placement Portal</h1>
+            <p class="lead mb-5 text-muted">Connecting students with Opportunities</p>
+            <div class="row justify-content-center g-4">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <i class="bi bi-box-arrow-in-right display-6 text-primary"></i>
+                        <h5 class="card-title mt-3">Already have an account?</h5>
+                        <a href="{{ url_for('login') }}" class="btn btn-outline-success w-100 mt-3">Login</a>
+                    </div>
+                </div>
+            
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <h4 class="card-title"> apply for dream job</h4>                 
+                            <a href="{{ url_for('student_register') }}" class="btn btn-primary w-100">Register as student</a>
+                        </div> 
+                    </div>    
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card h-100 border-0 shadow-sm">
+                        <div class="card-body">
+                            <h4 class="card-title"> Hiring someone for a job</h4>                 
+                            <a href="{{ url_for('company_register') }}" class="btn btn-primary w-100">Register as company</a>
+                        </div> 
+                    </div>    
+                </div>
+            </div>
+            
+            </div>
         </div>
     </div>
     {% endblock %}
