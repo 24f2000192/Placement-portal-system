@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>drive</title>
+</head>
+<body>
+   {% extends "base.html" %}
+   {% block content %}
+   <div class="row justtify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0 rounded-3">
+
+            <div class="card-header bg-success text-white rounded-top">
+                <h5 class="mb-0 fw-semibold">
+                    Create Placement Drive
+                </h5>
+            </div>
+
+            <div class="card-body p-4">
+
+                <form method="POST">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Job Title</label>
+                        <input type="text" name="job_title"
+                            class="form-control form-control-lg"
+                            placeholder="Enter job title"
+                            required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Job Description</label>
+                        <textarea name="job_description"
+                            class="form-control"
+                            rows="4"
+                            placeholder="Enter job description"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Location</label>
+                        <input type="text" name="location"
+                            class="form-control"
+                            placeholder="City or Remote">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Application Deadline</label>
+                        <input type="date" name="deadline"
+                            class="form-control">
+                    </div>
+
+                    <button type="submit"
+                        class="btn btn-success w-100 fw-semibold shadow-sm">
+                        Create Drive
+                    </button>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+    {% endblock %}
+</body>
+</html>

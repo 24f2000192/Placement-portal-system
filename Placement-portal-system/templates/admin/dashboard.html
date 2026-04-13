@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+    {% extends 'base.html' %}
+    {% block title %}Admin Dashboard{% endblock %}
+
+    {% block content %}
+    <h2 class="fw-bold text-primary" color="black">Admin Dashboard</h2>
+    {% if username %}
+    <h2>Welcome {{ username }}</h2>
+    {% endif %}
+
+
+    <!-- Stats Cards Row -->
+    <div class="row mt-4 g-4">
+        <div class="col-md-6">
+            <div class="card text-white bg-primary">
+                <div class="card-body shadow-sm border-0 text-center">
+                    <h5>Total Students</h5>
+                    <!-- displays the value passed from Flask route -->
+                    <h2 class="fw-bold">{{ student_count }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card text-white bg-primary">
+                <div class="card-body shadow-sm border-0 text-center">
+                    <h5>Total Companies</h5>
+                    <h2 class="fw-bold">{{ company_count }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card text-white bg-primary">
+                <div class="card-body shadow-sm border-0 text-center">
+                    <h5>Total Drives</h5>
+                    <h2 class="fw-bold">{{ drives_count }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card text-white bg-primary">
+                <div class="card-body shadow-sm border-0 text-center">
+                    <h5>Total Applications</h5>
+                    <h2 class="fw-bold">{{ application_count }}</h2>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <hr>
+
+    
+    <h4>Companies</h4>
+
+<form method="GET" action="{{ url_for('admin_dashboard') }}" class="mb-3">
+    <div class="input-group">
+        <input type="text" name="company_search" class="form-control"
+               placeholder="Search company by name..."
+               value="{{ request.args.get('company_search','') }}">
+        <button class="btn btn-primary">Search</button>
+    </div>
+</form>
+{% if request.args.get('company_search') %}
+<div class="alert alert-info py-2">
+    {{ company_search_count }} company(s) found for 
+    "<strong>{{ request.args.get('company_search') }}</strong>"
+</div>
+{% endif %}
+    <div class="table-responsive">
+        
+        <table class="table table-hover align-middle shadow-sm bg-white" >
+            <thead class="table-light">
+                <tr><th>ID</th><th>Name</th><th>Email</th><th>HR contact</th><th>status</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+                {% for company in companies %}
+                <tr>
+                    <td>{{ company.id }}</td>
+                    <td>{{ company.company_name }}</td>
+                    <td>{{ company.user.email }}</td>
+                    <td>{{ company.hr_contact }}</td>
+                    <td>
+                        {% if company.approval_status == "pending" %}
+                        <span class="badge bg-warning text-dark">Pending</span>
+
+                        {% elif company.approval_status == "approved" %}
+                        <span class="badge bg-success text-white">Approved</span>
+
+                        {% elif company.approval_status == "rejected" %}
+                        <span class="badge bg-danger text-white">Rejected</span>
+
+                        {% endif %}
+                        {% if company.approval_status == "approved" %}
+                            {% if company.is_active %}
+                        <span class="badge bg-primary">Active</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Deactivated</span>
+                            {% endif %}
+                        {% endif %}
+
+                    </td>
+                    <td>
+                        {% if company.approval_status == "pending" %}
+                            <a href="/approved_companies/{{company.id}}" class="btn btn-success btn-sm">
+                                Approve
+                            </a>
+                            <a href="/rejected_companies/{{company.id}}"class="btn btn-danger btn-sm">
+                                Reject
+                            </a>
+                        {% elif company.approval_status == "approved" %}
+                            {% if company.is_active %}
+                                <a href="/deactivate_company/{{company.id}}" class="btn btn-warning btn-sm">
+                                    Deactivate
+                                </a>
+                            {% else %}
+                                <a href="/activate_company/{{company.id}}" class="btn btn-success btn-sm">
+                                    Activate
+                                </a>
+                            {% endif %}    
+                        {% elif company.approval_status == "rejected" %}
+                            <a href="/approved_companies/{{company.id}}" class="btn btn-success btn-sm">
+                                Approve
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+<h4 class="mt-5 mb-3 fw-bold">Students</h4>
+
+<form method="GET" action="{{ url_for('admin_dashboard') }}" class="mb-3">
+    <div class="input-group">
+        <input type="text" name="student_search" class="form-control"
+               placeholder="Search student by Name, ID, Email....."
+               value="{{ request.args.get('student_search','') }}">
+        <button class="btn btn-primary">Search</button>
+    </div>
+</form>
+{% if request.args.get('student_search') %}
+<div class="alert alert-info py-2">
+    {{ student_search_count }} student(s) found for 
+    "<strong>{{ request.args.get('student_search') }}</strong>"
+</div>
+{% endif %}
+    <div class="table-responsitive">
+        <table class="table table-hover align-middle shadow-sm bg-white" >
+            <thead class="table-light">
+                <tr><th>ID</th><th>Name</th><th>Email</th><th>Branch</th><th>CGPA</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>{{ student.id }}</td>
+                    <td>{{ student.name }}</td>
+                    <td>{{ student.user.email }}</td>
+                    <td>{{ student.branch }}</td>
+                    <td>{{ student.cgpa }}</td>
+                    <td>{% if student.user.is_active %}
+                            <span class="badge bg-success text-white">Active</span>
+                        {% else %}
+                            <span class="badge bg-secondary text-white">Deactivated</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                       {% if student.user.is_active %}
+                            <a href="/deactivate_student/{{student.id}}" class="btn btn-warning btn-sm">Deactivate</a>
+                        {% else %}
+                            <a href="/activate_student/{{student.id}}" class="btn btn-success btn-sm">Activate</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <h4 class="mt-5 mb-3 fw-bold">Placement Drives</h4>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle shadow-sm bg-white">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>location</th>
+                    <th>Company</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                    <th>Applied students </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for drive in drives %}
+                <tr>
+                    <td>#{{ drive.id }}</td>
+                    <td>{{ drive.job_title }}</td>
+                    <td>{{ drive.location }}</td>
+                    <td>{{ drive.company.company_name }}</td>
+                    <td>{% if drive.status == "pending" %} 
+                            <span class="badge bg-warning text-white">pending</span>
+                        {% elif drive.status == "active" %} 
+                            <span class="badge bg-success text-white">Active</span>
+                        {% else %}
+                            <span class="badge bg-danger text-white">closed</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if drive.status == "pending" %}
+                            <a href="/approve_drive/{{drive.id}}" class="btn btn-success btn-sm">Approve</a>
+                        {% else %}    
+                            <a href="/reject_drive/{{drive.id}}" class="btn btn-danger btn-sm">Reject</a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ url_for('admin_view_applications', drive_id=drive.id) }}"class="btn btn-dark btn-sm">
+                            View Applications
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endblock %}
+</body>
+</html>

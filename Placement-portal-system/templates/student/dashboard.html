@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+    {% extends 'base.html' %}
+    {% block title %}Student Dashboard{% endblock %}
+    {% block content %}
+    <h2 class="fw-bold text-light mb-3">Welcome, {{ session.user_name }}!</h2>
+
+<!-- ALL APPROVED D RIVES -->
+    <h4 class="mt-4 text-light border-bottom pb-2">Available Placement Drives</h4>
+    {% if approved_drives %}
+    <table class="table table-striped table-bordered">
+        <thead><tr>
+            <th>Company</th><th>Job Title</th><th>Description</th><th>Deadline</th><th>Action</th>
+        </tr></thead>
+        <tbody>
+        {% for drive in approved_drives %}
+            <tr>
+                <td>{{ drive.company.company_name }}</td>
+                <td>{{ drive.job_title }}</td>
+                <td style="max-width: 250px;">{{ drive.job_description }}</td>
+                <td>{{ drive.deadline.strftime('%d %b %Y') if drive.deadline else 'Open' }}</td>
+                <td>
+                    <!-- Check if student already applied -->
+                    {% if drive.id in applied_drive_ids %}
+                    <span class="badge bg-secondary">Already Applied</span>
+                    {% else %}
+                    <a href="{{ url_for('apply', drive_id=drive.id) }}"
+                    class="btn btn-primary btn-sm">Apply</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="alert alert-dark text-center">No approved drives available right now.</p>
+{% endif %}
+
+<!-- MY APPLICATIONS -->
+<h4 class="mt-5 text-light border-bottom pb-2">My Applications</h4>
+{% if my_applications %}
+<table class="table table-bordered">
+    <thead><tr><th>Company</th><th>Job Title</th><th>Description</th><th>Applied On</th><th>Status</th></tr></thead>
+    <tbody>
+    {% for app in my_applications %}
+    <tr>
+        <td>{{ app.drive.company.company_name }}</td>
+        <td>{{ app.drive.job_title }}</td>
+        <td style="max-width: 250px;">{{ app.drive.job_description }}</td>
+        <td>{{ app.applied_date.strftime('%d %b %Y') }}</td>
+        <td>
+            <!-- Color-coded status badges -->
+            {% if app.status == 'selected' %}
+                <span class="badge bg-success">Selected ✓</span>
+            {% elif app.status == 'shortlisted' %}
+                <span class="badge bg-warning text-dark">Shortlisted</span>
+            {% elif app.status == 'rejected' %}
+                <span class="badge bg-danger">Rejected</span>
+            {% else %}
+                <span class="badge bg-info">Applied</span>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="alert alert-dark text-center">You haven't applied to any drives yet.</p>
+{% endif %}
+
+<!-- QUICK LINKS -->
+<div class="mt-4">
+    <a href="{{ url_for('profile_update') }}" class="btn btn-success me-2">Edit Profile</a>
+</div>
+{% endblock %}
+</body>
+</html>

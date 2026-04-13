@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Application</title>
+</head>
+<body>
+    {% extends "base.html" %}
+    {% block content %}
+    <table class="table table-bordered">
+        <tbody>
+            <tr>
+                <th>Company Name</th>
+                <th>Job Drive Title</th>
+                <th>Status</th>
+            </tr>
+            <tr>
+                <td>{{ app.job_drive.company.company_name }}</td>
+                <td>{{ app.job_drive.title }}</td>
+                <td>{{ app.status }}</td>
+            </tr>
+        </tbody>
+    </table>
+    {% endblock %}
+</body>
+</html>
